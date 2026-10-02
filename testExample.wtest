@@ -1,5 +1,31 @@
 import vehiculos.*
 
+describe "Combi adaptable" {
+    const combi = new CombiAdaptable()
+    //method initialize() {
+    //    
+    //}
 
+    test "comienza con interior accesible y motor urbano" {
+        assert.equals("Celeste", combi.color())
+        assert.equals(5, combi.capacidad())
+        assert.equals(true, combi.puedeTransportarSillaDeRuedas())
+        assert.equals(130, combi.velocidadMax())
+        assert.equals(1000, combi.autonomia())
+        assert.equals(false, combi.motorRuidoso())
+    }
 
+    test "permite cambiar a interior espacioso y motor deportivo" {
+        combi.interior(interiorEspacioso)
+        combi.motor(motorDeportivo)
 
+        assert.equals(7, combi.capacidad())
+        assert.equals(false, combi.puedeTransportarSillaDeRuedas())
+        assert.equals(230, combi.velocidadMax())
+        assert.equals(400, combi.autonomia())
+        assert.equals(true, combi.motorRuidoso())
+
+        combi.interior(interiorAccesible)
+        combi.motor(motorUrbano)
+    }
+}	

@@ -42,17 +42,44 @@ class Economico {
 
     method autonomia() = (autonomia + self.valorAutonomiaSiTieneTanqueDeGas()) - (self.valorAutonomiaSiTieneTransportador() + self.valorAutonomiaSiTieneCañoDeEscape())
 
-    method valorAutonomiaSiTieneTanqueDeGas() = 0 
-    method valorAutonomiaSiTieneTransportador()= 0
-    method valorAutonomiaSiTieneCañoDeEscape() = 0
+    method valorAutonomiaSiTieneTanqueDeGas() = if(tieneTanqueDeGasExtra){200} else{0}
+    method valorAutonomiaSiTieneTransportador()= if(tieneCañoDeEscapeSilencioso){20} else{0}
+    method valorAutonomiaSiTieneCañoDeEscape() = if(tieneCañoDeEscapeSilencioso){10} else{0}
 }
 
 class CombiAdaptable {
-    var property velocidadMax = 0
-    const capacidad = 0
-    var property color = null //"Negro"
-    const motorRuidoso = true
-    const puedeTransportarSillaDeRuedas = false
-    var property autonomia = 0
+    var property interior = interiorAccesible
+    var property motor = motorUrbano
+    const color = "Celeste"
 
+
+    method capacidad() = interior.capacidad()
+    method puedeTransportarSillaDeRuedas() = interior.puedeTransportarSillaDeRuedas()
+    method velocidadMax() = motor.velocidadMax()
+    method autonomia() = motor.autonomia()
+    method motorRuidoso() = motor.motorRuidoso()
+    method color() = color
 }
+
+object interiorEspacioso {
+    method capacidad() = 7
+    method puedeTransportarSillaDeRuedas() = false
+}
+
+object interiorAccesible {
+    method capacidad() = 5
+    method puedeTransportarSillaDeRuedas() = true
+}
+
+object motorDeportivo {
+    method velocidadMax() = 230
+    method autonomia() = 400
+    method motorRuidoso() = true
+}
+
+object motorUrbano {
+    method velocidadMax() = 130
+    method autonomia() = 1000
+    method motorRuidoso() = false
+}
+
