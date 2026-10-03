@@ -16,13 +16,14 @@ class Economico {
     const capacidad = 5
     const color = "Beige"    //modelar objetos colores? barbaridad
     const motorRuidoso = true
-    var property puedeTransportarSillaDeRuedas = true
+    var property puedeTransportarSillaDeRuedas = false
     var property autonomia = 200
     var property tieneTanqueDeGasExtra = false
     var property tieneCañoDeEscapeSilencioso = false
 
 
     method color() = color
+    method motorRuidoso() = motorRuidoso && !tieneCañoDeEscapeSilencioso && !tieneTanqueDeGasExtra
     method capacidad() = capacidad - self.espacioTotalDeSusAdaptaciones()
     method espacioTotalDeSusAdaptaciones() = if(tieneTanqueDeGasExtra && puedeTransportarSillaDeRuedas){
         2
@@ -43,7 +44,7 @@ class Economico {
     method autonomia() = (autonomia + self.valorAutonomiaSiTieneTanqueDeGas()) - (self.valorAutonomiaSiTieneTransportador() + self.valorAutonomiaSiTieneCañoDeEscape())
 
     method valorAutonomiaSiTieneTanqueDeGas() = if(tieneTanqueDeGasExtra){200} else{0}
-    method valorAutonomiaSiTieneTransportador()= if(tieneCañoDeEscapeSilencioso){20} else{0}
+    method valorAutonomiaSiTieneTransportador()= if(puedeTransportarSillaDeRuedas){20} else{0}
     method valorAutonomiaSiTieneCañoDeEscape() = if(tieneCañoDeEscapeSilencioso){10} else{0}
 }
 

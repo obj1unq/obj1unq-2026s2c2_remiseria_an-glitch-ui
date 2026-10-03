@@ -1,4 +1,5 @@
 import vehiculos.*
+import reserva.*
 
 describe "Combi adaptable" {
     const combi = new CombiAdaptable()
@@ -29,3 +30,89 @@ describe "Combi adaptable" {
         combi.motor(motorUrbano)
     }
 }	
+
+describe "Reserva" {
+    test "cumple la reserva exigente con la combi" {
+        const reserva = new Reserva()
+        const combi = new CombiAdaptable()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(480)
+        reserva.maxHorasDeViaje(4)
+        reserva.necesitaAutoSilencioso(true)
+        reserva.necesitaTransportarSillaDeRuedas(true)
+        reserva.agregarColor("Rojo")
+        reserva.agregarColor("Verde Fluor")
+
+        assert.equals(true, reserva.puedeSerCumplidaPor(combi))
+    }
+
+    test "falla si rey de copas no tiene capacidad suficiente" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(200)
+        reserva.maxHorasDeViaje(2)
+        const reyDeCopas = new Torino()
+        reyDeCopas.color("Rojo")
+        reyDeCopas.autonomia(300)
+        reyDeCopas.velocidadMax(120)
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(reyDeCopas))
+    }
+
+    test "falla si xeneize no tiene autonomia suficiente" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(195)
+        reserva.maxHorasDeViaje(2)
+        const xeneize = new Economico()
+        xeneize.tieneCañoDeEscapeSilencioso(true)
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(xeneize))
+    }
+
+    test "falla si millonario no alcanza la velocidad requerida" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(200)
+        reserva.maxHorasDeViaje(1)
+        const millonario = new Economico()
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(millonario))
+    }
+
+    test "falla si rey de copas tiene un color contraindicado" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(4)
+        reserva.distanciaARecorrer(150)
+        reserva.maxHorasDeViaje(1.5)
+        reserva.agregarColor("Rojo")
+        const reyDeCopas = new Torino()
+        reyDeCopas.color("Rojo")
+        reyDeCopas.autonomia(300)
+        reyDeCopas.velocidadMax(120)
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(reyDeCopas))
+    }
+
+    test "falla si millonario no puede llevar silla de ruedas" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(150)
+        reserva.maxHorasDeViaje(1.5)
+        reserva.necesitaTransportarSillaDeRuedas(true)
+        const millonario = new Economico()
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(millonario))
+    }
+
+    test "falla si millonario es ruidoso y se necesita silencio" {
+        const reserva = new Reserva()
+        reserva.cantPersonas(5)
+        reserva.distanciaARecorrer(150)
+        reserva.maxHorasDeViaje(1.5)
+        reserva.necesitaAutoSilencioso(true)
+        const millonario = new Economico()
+
+        assert.equals(false, reserva.puedeSerCumplidaPor(millonario))
+    }
+}
