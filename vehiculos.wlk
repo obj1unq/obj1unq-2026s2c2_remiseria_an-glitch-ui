@@ -48,7 +48,7 @@ class Economico {
     method valorAutonomiaSiTieneCañoDeEscape() = if(tieneCañoDeEscapeSilencioso){10} else{0}
 }
 
-class CombiAdaptable {
+object combiAdaptable {
     var property interior = interiorAccesible
     var property motor = motorUrbano
     const color = "Celeste"

@@ -1,40 +1,41 @@
 import vehiculos.*
 import reserva.*
+import chasquiCoop.*
 
 describe "Combi adaptable" {
-    const combi = new CombiAdaptable()
+    //const combi = new CombiAdaptable()
     //method initialize() {
     //    
     //}
 
     test "comienza con interior accesible y motor urbano" {
-        assert.equals("Celeste", combi.color())
-        assert.equals(5, combi.capacidad())
-        assert.equals(true, combi.puedeTransportarSillaDeRuedas())
-        assert.equals(130, combi.velocidadMax())
-        assert.equals(1000, combi.autonomia())
-        assert.equals(false, combi.motorRuidoso())
+        assert.equals("Celeste", combiAdaptable.color())
+        assert.equals(5, combiAdaptable.capacidad())
+        assert.equals(true, combiAdaptable.puedeTransportarSillaDeRuedas())
+        assert.equals(130, combiAdaptable.velocidadMax())
+        assert.equals(1000, combiAdaptable.autonomia())
+        assert.equals(false, combiAdaptable.motorRuidoso())
     }
 
     test "permite cambiar a interior espacioso y motor deportivo" {
-        combi.interior(interiorEspacioso)
-        combi.motor(motorDeportivo)
+        combiAdaptable.interior(interiorEspacioso)
+        combiAdaptable.motor(motorDeportivo)
 
-        assert.equals(7, combi.capacidad())
-        assert.equals(false, combi.puedeTransportarSillaDeRuedas())
-        assert.equals(230, combi.velocidadMax())
-        assert.equals(400, combi.autonomia())
-        assert.equals(true, combi.motorRuidoso())
+        assert.equals(7, combiAdaptable.capacidad())
+        assert.equals(false, combiAdaptable.puedeTransportarSillaDeRuedas())
+        assert.equals(230, combiAdaptable.velocidadMax())
+        assert.equals(400,combiAdaptable.autonomia())
+        assert.equals(true, combiAdaptable.motorRuidoso())
 
-        combi.interior(interiorAccesible)
-        combi.motor(motorUrbano)
+        combiAdaptable.interior(interiorAccesible)
+        combiAdaptable.motor(motorUrbano)
     }
 }	
 
 describe "Reserva" {
     test "cumple la reserva exigente con la combi" {
         const reserva = new Reserva()
-        const combi = new CombiAdaptable()
+        //const combi = new CombiAdaptable()
         reserva.cantPersonas(5)
         reserva.distanciaARecorrer(480)
         reserva.maxHorasDeViaje(4)
@@ -43,7 +44,7 @@ describe "Reserva" {
         reserva.agregarColor("Rojo")
         reserva.agregarColor("Verde Fluor")
 
-        assert.equals(true, reserva.puedeSerCumplidaPor(combi))
+        assert.equals(true, reserva.puedeSerCumplidaPor(combiAdaptable))
     }
 
     test "falla si rey de copas no tiene capacidad suficiente" {
@@ -114,5 +115,62 @@ describe "Reserva" {
         const millonario = new Economico()
 
         assert.equals(false, reserva.puedeSerCumplidaPor(millonario))
+    }
+
+    test "villaElisa asigna correctamente sus reservas" {
+        //const combi = new CombiAdaptable()
+        const academia = new Torino()
+        academia.color("Celeste")
+        academia.autonomia(250)
+        academia.velocidadMax(110)
+
+        const reyDeCopas = new Torino()
+        reyDeCopas.color("Rojo")
+        reyDeCopas.autonomia(300)
+        reyDeCopas.velocidadMax(120)
+
+        const xeneize = new Economico()
+        xeneize.tieneCañoDeEscapeSilencioso(true)
+
+        chasquiCoop.agregarVehiculo(combiAdaptable)
+        chasquiCoop.agregarVehiculo(academia)
+        chasquiCoop.agregarVehiculo(reyDeCopas)
+
+        const reservaUNQ = new Reserva()
+        reservaUNQ.cantPersonas(4)
+        reservaUNQ.distanciaARecorrer(30)
+        reservaUNQ.maxHorasDeViaje(4)
+        reservaUNQ.agregarColor("Rojo")
+
+        assert.equals(2, (chasquiCoop.vehiculosCapacitadosPara(reservaUNQ)).size())
+        assert.equals(true, (chasquiCoop.vehiculosCapacitadosPara(reservaUNQ)).contains(combiAdaptable))
+        assert.equals(true, (chasquiCoop.vehiculosCapacitadosPara(reservaUNQ)).contains(academia))
+        assert.equals(false, (chasquiCoop.vehiculosCapacitadosPara(reservaUNQ)).contains(reyDeCopas))
+        assert.throwsException({ chasquiCoop.hacerReserva(reservaUNQ, reyDeCopas) })
+        assert.throwsException({ chasquiCoop.hacerReserva(reservaUNQ, xeneize) })
+        chasquiCoop.hacerReserva(reservaUNQ, combiAdaptable)
+
+        const reservaUTN = new Reserva()
+        reservaUTN.cantPersonas(4)
+        reservaUTN.distanciaARecorrer(60)
+        reservaUTN.maxHorasDeViaje(4)
+        reservaUTN.necesitaAutoSilencioso(true)
+        reservaUTN.necesitaTransportarSillaDeRuedas(true)
+        chasquiCoop.hacerReserva(reservaUTN, combiAdaptable)
+
+        const reservaUnsam = new Reserva()
+        reservaUnsam.cantPersonas(4)
+        reservaUnsam.distanciaARecorrer(70)
+        reservaUnsam.maxHorasDeViaje(4)
+        reservaUnsam.agregarColor("Rojo")
+        chasquiCoop.hacerReserva(reservaUnsam, academia)
+
+        assert.equals(combiAdaptable, reservaUNQ.auto())
+        assert.equals(combiAdaptable, reservaUTN.auto())
+        assert.equals(academia, reservaUnsam.auto())
+        assert.equals([reservaUNQ, reservaUTN], chasquiCoop.reservasParaElVehiculo(combiAdaptable))
+        assert.equals([reservaUnsam], chasquiCoop.reservasParaElVehiculo(academia))
+        assert.equals(90, chasquiCoop.distanciaTotalRecorridaPara(combiAdaptable))
+        assert.equals(70, chasquiCoop.distanciaTotalRecorridaPara(academia))
     }
 }
