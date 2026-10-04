@@ -25,11 +25,8 @@ object chasquiCoop {
     }
 
     method validarRealizarReserva(reserva, vehiculo) {
-        if(!self.existeElAuto(vehiculo)){
+        if(!(self.existeElAuto(vehiculo) and reserva.puedeSerCumplidaPor(vehiculo))){
             self.error("No se puede asignar un auto que no está en la flota...")
-        }
-        if(!reserva.puedeSerCumplidaPor(vehiculo)){
-            self.error("El auto no puede cumplir con la reserva...")
         }
     }
 
